@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+.venv/
+venv/
+env/
+
+# Build/test artifacts
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local OS/editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Local document outputs
+*.token-saver.md
+raw.md
+context.md
+cleaned.md
+
+# Sensitive/local inputs
+*.pdf
+*.docx
+*.pptx
+*.xlsx
+*.png
+*.jpg
+*.jpeg
+*.tif
+*.tiff
+*.bmp
