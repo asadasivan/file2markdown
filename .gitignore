@@ -21,7 +21,7 @@ htmlcov/
 .vscode/
 
 # Local document outputs
-*.token-saver.md
+*.file2markdown.md
 raw.md
 context.md
 cleaned.md

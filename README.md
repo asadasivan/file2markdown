@@ -1,6 +1,6 @@
-# Token Saver
+# File2Markdown
 
-Token Saver converts local documents into Markdown and removes mechanical noise so the result can be used as lower-token LLM context.
+File2Markdown converts local documents into Markdown and removes mechanical noise so the result can be used as lower-token LLM context.
 
 It is designed for internal-document workflows where the default security posture should be local-only and conservative.
 
@@ -21,7 +21,7 @@ It is designed for internal-document workflows where the default security postur
 
 ## Security Boundary
 
-Token Saver is intentionally local-only.
+File2Markdown is intentionally local-only.
 
 It does not configure or use:
 
@@ -41,7 +41,7 @@ Do not use this tool on documents unless your local machine, Python environment,
 
 ## Install
 
-Token Saver depends on [microsoft/markitdown](https://github.com/microsoft/markitdown) for local document-to-Markdown conversion.
+File2Markdown depends on [microsoft/markitdown](https://github.com/microsoft/markitdown) for local document-to-Markdown conversion.
 
 Use a virtual environment:
 
@@ -53,34 +53,34 @@ python3 -m pip install -r requirements.txt
 
 ## Usage
 
-Convert a file and create `<input-name>.token-saver.md`:
+Convert a file and create `<input-name>.file2markdown.md`:
 
 ```bash
-python3 token_saver.py input.pdf
+python3 file2markdown.py input.pdf
 ```
 
 Write to a specific Markdown file:
 
 ```bash
-python3 token_saver.py input.docx -o context.md
+python3 file2markdown.py input.docx -o context.md
 ```
 
 Save raw MarkItDown output for review:
 
 ```bash
-python3 token_saver.py input.pptx --save-raw-md raw.md -o context.md
+python3 file2markdown.py input.pptx --save-raw-md raw.md -o context.md
 ```
 
 Keep standalone classification labels:
 
 ```bash
-python3 token_saver.py input.pdf --keep-classification
+python3 file2markdown.py input.pdf --keep-classification
 ```
 
 Remove an additional repeated header/footer line:
 
 ```bash
-python3 token_saver.py input.pdf --drop-line-regex '^Document ID:.*$'
+python3 file2markdown.py input.pdf --drop-line-regex '^Document ID:.*$'
 ```
 
 ## Output
@@ -90,7 +90,7 @@ The output file must end in `.md` or `.markdown`.
 Example:
 
 ```text
-Wrote cleaned Markdown: /path/to/input.token-saver.md
+Wrote cleaned Markdown: /path/to/input.file2markdown.md
 Estimated context reduction: 12,400 -> 8,900 tokens (28% reduction)
 ```
 
@@ -116,8 +116,8 @@ Initialize and push to your personal GitHub repo:
 
 ```bash
 git init
-git add README.md requirements.txt .gitignore token_saver.py
-git commit -m "Initial token saver utility"
+git add README.md requirements.txt .gitignore file2markdown.py
+git commit -m "Initial file2markdown utility"
 git branch -M main
 git remote add origin git@github.com:<your-user>/<your-repo>.git
 git push -u origin main
