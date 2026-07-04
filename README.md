@@ -122,3 +122,18 @@ git branch -M main
 git remote add origin git@github.com:<your-user>/<your-repo>.git
 git push -u origin main
 ```
+
+## Getting Help
+
+Contact Arunkumar Sadasivan at contact.arunsec@gmail.com.
+
+## Contributing
+
+1. Fork the repository.
+2. Commit your changes.
+3. Push to your branch.
+4. Create a new pull request.
+
+## Issues
+
+To report issues, bugs, or enhancement requests, use the issue tracker.
