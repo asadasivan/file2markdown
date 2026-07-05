@@ -56,6 +56,14 @@ NOISE_LINE_PATTERNS = [
     r"^\s*All\s+rights\s+reserved\.?\s*$",
 ]
 
+DEFAULT_DROP_SECTION_START_PATTERNS = [
+    r"^Additional Information and Endnotes$",
+    r"^Information About Your Fidelity Statement\b",
+    r"^Important Information$",
+    r"^Note\s*:",
+    r"^Disclaimer\s*:",
+]
+
 
 def convert_with_markitdown(input_path: Path) -> str:
     if importlib.util.find_spec("markitdown") is None:
@@ -121,6 +129,34 @@ def remove_repeated_lines(text: str, min_count: int) -> str:
     return "\n".join(kept_lines)
 
 
+def normalized_section_line(line: str) -> str:
+    line = re.sub(r"^\s{0,3}#{1,6}\s*", "", line)
+    line = re.sub(r"[*_`]+", "", line)
+    return re.sub(r"\s+", " ", line).strip()
+
+
+def remove_low_value_sections(
+    text: str,
+    drop_section_start_patterns: list[str],
+) -> str:
+    if not drop_section_start_patterns:
+        return text
+
+    patterns = [re.compile(pattern, re.IGNORECASE) for pattern in drop_section_start_patterns]
+    kept_lines: list[str] = []
+    dropping = False
+
+    for line in text.splitlines():
+        normalized = normalized_section_line(line)
+        if not dropping and any(pattern.search(normalized) for pattern in patterns):
+            dropping = True
+            continue
+        if not dropping:
+            kept_lines.append(line)
+
+    return "\n".join(kept_lines)
+
+
 def remove_markdown_noise(text: str) -> str:
     # Drop empty Markdown links/images that sometimes appear after conversion.
     text = re.sub(r"(?m)^\s*!?\[\s*\]\([^)]*\)\s*$", "", text)
@@ -156,6 +192,8 @@ def clean_text(
     repeated_line_min_count: int,
     extra_patterns: list[str],
     keep_classification: bool,
+    drop_low_value_sections: bool,
+    extra_section_start_patterns: list[str],
 ) -> str:
     text = normalize_ocr_text(text)
 
@@ -170,6 +208,10 @@ def clean_text(
     else:
         text = remove_pattern_lines(text, extra_patterns)
 
+    section_patterns = list(extra_section_start_patterns)
+    if drop_low_value_sections:
+        section_patterns = DEFAULT_DROP_SECTION_START_PATTERNS + section_patterns
+    text = remove_low_value_sections(text, section_patterns)
     text = remove_repeated_lines(text, repeated_line_min_count)
     text = remove_markdown_noise(text)
     text = fix_line_breaks(text)
@@ -215,6 +257,23 @@ def parse_args() -> argparse.Namespace:
             "Example: --drop-line-regex '^Document ID:.*$'"
         ),
     )
+    parser.add_argument(
+        "--keep-low-value-sections",
+        action="store_true",
+        help=(
+            "Do not remove known low-value trailing sections such as Fidelity "
+            "endnotes, Robinhood Important Information, and Note/Disclaimer sections."
+        ),
+    )
+    parser.add_argument(
+        "--drop-section-start-regex",
+        action="append",
+        default=[],
+        help=(
+            "Full-section start regex. When matched, that line and all following "
+            "content are removed. Can be repeated."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -249,6 +308,8 @@ def main() -> int:
             repeated_line_min_count=args.repeated_line_min_count,
             extra_patterns=args.drop_line_regex,
             keep_classification=args.keep_classification,
+            drop_low_value_sections=not args.keep_low_value_sections,
+            extra_section_start_patterns=args.drop_section_start_regex,
         )
         output_path.write_text(cleaned)
     except Exception as exc:

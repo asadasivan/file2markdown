@@ -13,6 +13,7 @@ It is designed for internal-document workflows where the default security postur
    - page numbers
    - repeated headers and footers
    - standalone classification banners
+   - common low-value trailing sections in financial statements
    - empty Markdown links/images
    - broken hyphenated line wraps
    - excessive blank lines
@@ -82,6 +83,26 @@ Remove an additional repeated header/footer line:
 ```bash
 python3 file2markdown.py input.pdf --drop-line-regex '^Document ID:.*$'
 ```
+
+Keep default low-value trailing sections:
+
+```bash
+python3 file2markdown.py input.pdf --keep-low-value-sections
+```
+
+Remove a custom trailing section and everything after it:
+
+```bash
+python3 file2markdown.py input.pdf --drop-section-start-regex '^Important Notices$'
+```
+
+By default, File2Markdown removes trailing sections that usually add token cost without helping statement analysis:
+
+- Fidelity `Additional Information and Endnotes`
+- Fidelity `Information About Your Fidelity Statement`
+- Robinhood `Important Information`
+- `Note :` sections
+- `Disclaimer :` sections
 
 ## Output
 
