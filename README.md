@@ -44,56 +44,56 @@ Do not use this tool on documents unless your local machine, Python environment,
 
 File2Markdown depends on [microsoft/markitdown](https://github.com/microsoft/markitdown) for local document-to-Markdown conversion.
 
-Use a virtual environment:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and use Python 3.10 or newer. From the repository directory, install dependencies:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install -r requirements.txt
+uv sync
 ```
+
+uv manages the project's `.venv` automatically. Dependencies are declared in `pyproject.toml`. The first sync generates `uv.lock` if it is absent; subsequent syncs use its resolved versions. Commit the generated lockfile for reproducible installs, and use `uv sync --locked` to require an up-to-date lockfile. No manual environment activation is needed when using `uv run`.
 
 ## Usage
 
 Convert a file and create `<input-name>.file2markdown.md`:
 
 ```bash
-python3 file2markdown.py input.pdf
+uv run file2markdown.py input.pdf
 ```
 
 Write to a specific Markdown file:
 
 ```bash
-python3 file2markdown.py input.docx -o context.md
+uv run file2markdown.py input.docx -o context.md
 ```
 
 Save raw MarkItDown output for review:
 
 ```bash
-python3 file2markdown.py input.pptx --save-raw-md raw.md -o context.md
+uv run file2markdown.py input.pptx --save-raw-md raw.md -o context.md
 ```
 
 Keep standalone classification labels:
 
 ```bash
-python3 file2markdown.py input.pdf --keep-classification
+uv run file2markdown.py input.pdf --keep-classification
 ```
 
 Remove an additional repeated header/footer line:
 
 ```bash
-python3 file2markdown.py input.pdf --drop-line-regex '^Document ID:.*$'
+uv run file2markdown.py input.pdf --drop-line-regex '^Document ID:.*$'
 ```
 
 Keep default low-value trailing sections:
 
 ```bash
-python3 file2markdown.py input.pdf --keep-low-value-sections
+uv run file2markdown.py input.pdf --keep-low-value-sections
 ```
 
 Remove a custom trailing section and everything after it:
 
 ```bash
-python3 file2markdown.py input.pdf --drop-section-start-regex '^Important Notices$'
+uv run file2markdown.py input.pdf --drop-section-start-regex '^Important Notices$'
 ```
 
 By default, File2Markdown removes trailing sections that usually add token cost without helping statement analysis:
@@ -137,7 +137,7 @@ Initialize and push to your personal GitHub repo:
 
 ```bash
 git init
-git add README.md requirements.txt .gitignore file2markdown.py
+git add README.md pyproject.toml uv.lock .gitignore file2markdown.py
 git commit -m "Initial file2markdown utility"
 git branch -M main
 git remote add origin git@github.com:<your-user>/<your-repo>.git
@@ -149,6 +149,15 @@ git push -u origin main
 Contact Arunkumar Sadasivan at contact.arunsec@gmail.com.
 
 ## Contributing
+
+Install dependencies with `uv sync` and run the script with `uv run file2markdown.py`. To update MarkItDown, run:
+
+```bash
+uv lock --upgrade-package markitdown
+uv sync --locked
+```
+
+Commit both `pyproject.toml` and `uv.lock` when changing dependency declarations.
 
 1. Fork the repository.
 2. Commit your changes.

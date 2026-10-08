@@ -68,8 +68,8 @@ DEFAULT_DROP_SECTION_START_PATTERNS = [
 def convert_with_markitdown(input_path: Path) -> str:
     if importlib.util.find_spec("markitdown") is None:
         raise RuntimeError(
-            "Python package not found: markitdown. Install locally with: "
-            "python3 -m pip install 'markitdown[pdf,docx,pptx,xlsx]'"
+            "Python package not found: markitdown. From the File2Markdown "
+            "repository, run 'uv sync' and use 'uv run file2markdown.py'."
         )
 
     from markitdown import MarkItDown  # type: ignore
